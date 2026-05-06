@@ -1,0 +1,42 @@
+# ===== Original data (license / size) =====
+aml_data/
+icij_data/
+*.zip
+ibm-transactions-for-anti-money-laundering-aml/
+full-oldb.LATEST.zip
+*.dump
+
+# ===== Artifacts (regeneratable) =====
+pipeline/artifacts/
+pipeline/notebooks/.ipynb_checkpoints/
+
+# ===== Secrets =====
+kaggle.json
+.env
+*.key
+*.pem
+
+# ===== Python =====
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.ipynb_checkpoints/
+venv/
+.venv/
+env/
+*.egg-info/
+
+# ===== Node (frontend, later) =====
+node_modules/
+dist/
+build/
+.next/
+
+# ===== OS / IDE =====
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
