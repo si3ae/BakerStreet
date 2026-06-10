@@ -2,12 +2,32 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+  Traveling Typewriter ttf는 src/main.tsx에서 import + FontFace API로 박음.
+  CSS의 @font-face url(...)이 Vite 빌드에서 안정적이지 않아 JS 쪽으로 옮김.
+*/
+
 html, body, #root {
   height: 100%;
   margin: 0;
 }
 
 body {
-  background: #FDF5E6;
-  font-family: 'Courier Prime', 'Special Elite', monospace;
+  background: #EFE4CC;
+  font-family: 'Traveling _Typewriter', 'Courier Prime', 'Special Elite', monospace;
+  color: #2A2520;
+}
+
+/*
+  돋보기 커서 — design v8 수사 보드 컨셉.
+  data URI SVG: 32x32, hotspot은 렌즈 중심(10, 10) 근처.
+  검은 잉크 톤 stroke로 그려서 빈티지 종이 위에 자연스럽게 얹힘.
+*/
+* {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><circle cx='11' cy='11' r='7.5' fill='none' stroke='%232A2520' stroke-width='2.2'/><circle cx='11' cy='11' r='3.5' fill='rgba(178,34,34,0.15)' stroke='none'/><line x1='16.5' y1='16.5' x2='26' y2='26' stroke='%232A2520' stroke-width='2.6' stroke-linecap='round'/></svg>") 11 11, auto;
+}
+
+/* 클릭 가능한 요소엔 약간 다른 톤 — 빨간 점 강조 */
+.cursor-pointer, .cursor-pointer * {
+  cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'><circle cx='11' cy='11' r='7.5' fill='rgba(178,34,34,0.18)' stroke='%23B22222' stroke-width='2.4'/><circle cx='11' cy='11' r='3' fill='%23B22222'/><line x1='16.5' y1='16.5' x2='26' y2='26' stroke='%23B22222' stroke-width='2.6' stroke-linecap='round'/></svg>") 11 11, pointer;
 }

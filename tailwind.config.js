@@ -11,7 +11,9 @@ export default {
         demoted: '#9CA3AF',    // verification-failed (gray)
       },
       fontFamily: {
-        mono: ['"Courier Prime"', '"Special Elite"', 'monospace'],
+        // 'font-mono' 클래스 = 종이/잉크 영역 폰트 (Traveling Typewriter 우선).
+        // ttf 안 박혀 있거나 로드 실패 시 Courier Prime/Special Elite로 fallback.
+        mono: ['"Traveling _Typewriter"', '"Courier Prime"', '"Special Elite"', 'monospace'],
       },
     },
   },

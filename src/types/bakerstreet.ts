@@ -36,6 +36,9 @@ export interface Evidence {
 }
 
 export interface Edge {
+  // derived id `${from}__${to}__${type}`, data/index.ts에서 주입.
+  // 원본 JSON에는 없지만 로딩 시점에 박아서 store 단에선 항상 존재 보장.
+  id: string
   from: string
   to: string
   type: EdgeType
@@ -72,7 +75,7 @@ export interface Meta {
   generated_at: string
   model_used: string
   gemma_summary: string
-  gemma_pattern: string
+  gemma_pattern: string[]
 }
 
 export interface VerificationFailure {

@@ -1,7 +1,9 @@
-import { useGraphStore } from '../store/graphStore'
+import { useState } from 'react'
+import { motion } from 'framer-motion'
+import { useGraphStore, type Node } from '../store/graphStore'
 import { useUIStore } from '../store/uiStore'
 import { cardCenter, CARD_W, CARD_H } from '../lib/layout'
-import type { Edge, Node } from '../types/bakerstreet'
+import type { Edge } from '../types/bakerstreet'
 
 // edge 양 끝을 카드 경계까지만 그리도록 줄여서 화살표가 박혀 보이지 않게.
 // 정확한 박스-라인 교차는 over-engineering이라 단순 비례 축약.
@@ -15,7 +17,6 @@ function trimToBox(
   const dx = toCx - fromCx
   const dy = toCy - fromCy
   const dist = Math.hypot(dx, dy) || 1
-  // 양쪽 끝에서 pad만큼 잘라냄
   const ratioStart = pad / dist
   const ratioEnd = (dist - pad) / dist
   return {
@@ -25,6 +26,12 @@ function trimToBox(
     y2: fromCy + dy * ratioEnd,
   }
 }
+
+// design v7 §"The Three-Second Scene": shared_attribute는 dashed, flow는 solid.
+// draw-in 동안에는 stroke-dashoffset 트릭을 써야 하므로 임시로 solid 처리,
+// 애니메이션 완료 후 shared_attribute만 dasharray 패턴으로 전환.
+// → 점선 패턴과 dashoffset 애니메이션이 충돌하는 문제 회피.
+const DRAW_DURATION_S = 0.4
 
 interface SingleEdgeProps {
   edge: Edge
@@ -36,10 +43,13 @@ interface SingleEdgeProps {
 function SingleEdge({ edge, index, from, to }: SingleEdgeProps) {
   const selectedEdgeIndex = useUIStore((s) => s.selectedEdgeIndex)
   const selectEdge = useUIStore((s) => s.selectEdge)
+  const isActive = useUIStore((s) => s.activeEdges.includes(edge.id))
+
+  // 애니메이션 완료 여부 — true가 되면 shared_attribute는 dashed로 전환.
+  const [drawnIn, setDrawnIn] = useState(false)
 
   const fromCenter = cardCenter(from.x, from.y)
   const toCenter = cardCenter(to.x, to.y)
-  // pad ≈ 카드 박스 반대각선 절반보다 살짝 짧게
   const pad = Math.max(CARD_W, CARD_H) / 2 + 4
   const { x1, y1, x2, y2 } = trimToBox(
     fromCenter.cx,
@@ -48,6 +58,10 @@ function SingleEdge({ edge, index, from, to }: SingleEdgeProps) {
     toCenter.cy,
     pad
   )
+
+  // 점화되지 않은 edge는 렌더 자체 생략. hitbox도 사라져 발표 흐름에
+  // 끼어들지 않음 (자연스러운 reveal). 클릭 popover는 점화 후에만 가능.
+  if (!isActive) return null
 
   const isFlow = edge.type === 'flow'
   const isDemoted = edge.verification.status === 'demoted'
@@ -60,11 +74,25 @@ function SingleEdge({ edge, index, from, to }: SingleEdgeProps) {
       : '#4A6FA5'            // verified shared_attribute → ink blue
 
   const strokeWidth = isFlow ? 2 : 1.5
-  const dasharray = isFlow ? undefined : '6 4'
   const opacity = isDemoted ? 0.45 : 0.9
-  const ringWidth = strokeWidth + 8 // 클릭 hitbox 두께
+  const ringWidth = strokeWidth + 8
 
-  // marker arrow는 flow에만, demoted 여부에 따라 마커 id 분리
+  // 라인 길이 — dashoffset 애니메이션의 시작값.
+  const length = Math.hypot(x2 - x1, y2 - y1)
+
+  // 표시용 dasharray:
+  //  - 애니메이션 동안엔 [length, length] (offset만 줄이면 솔리드로 점차 노출)
+  //  - flow는 끝나도 solid 유지 → undefined
+  //  - shared_attribute는 끝난 뒤 '6 4'로 전환
+  let displayDasharray: string | undefined
+  if (!drawnIn) {
+    displayDasharray = `${length} ${length}`
+  } else if (!isFlow) {
+    displayDasharray = '6 4'
+  } else {
+    displayDasharray = undefined
+  }
+
   const markerId = isFlow
     ? isDemoted
       ? 'arrow-flow-demoted'
@@ -88,20 +116,24 @@ function SingleEdge({ edge, index, from, to }: SingleEdgeProps) {
         stroke="transparent"
         strokeWidth={ringWidth}
       />
-      {/* visible edge */}
-      <line
+      {/* visible edge — Framer Motion으로 stroke-dashoffset 애니메이트 */}
+      <motion.line
         x1={x1}
         y1={y1}
         x2={x2}
         y2={y2}
         stroke={baseColor}
         strokeWidth={isSelected ? strokeWidth + 1.5 : strokeWidth}
-        strokeDasharray={dasharray}
+        strokeDasharray={displayDasharray}
         opacity={opacity}
         markerEnd={markerId ? `url(#${markerId})` : undefined}
+        initial={{ strokeDashoffset: length }}
+        animate={{ strokeDashoffset: 0 }}
+        transition={{ duration: DRAW_DURATION_S, ease: 'easeOut' }}
+        onAnimationComplete={() => setDrawnIn(true)}
       />
-      {/* demoted ⚠ 아이콘 — edge midpoint */}
-      {isDemoted && (
+      {/* demoted ⚠ 아이콘 — edge midpoint. draw-in 끝난 뒤에만 표시. */}
+      {isDemoted && drawnIn && (
         <g transform={`translate(${(x1 + x2) / 2}, ${(y1 + y2) / 2})`}>
           <circle r={10} fill="#FDF5E6" stroke="#B22222" strokeWidth={1.5} />
           <text
@@ -156,7 +188,13 @@ export function EdgeLayer() {
         const to = nodes.find((n) => n.id === edge.to)
         if (!from || !to) return null
         return (
-          <SingleEdge key={idx} edge={edge} index={idx} from={from} to={to} />
+          <SingleEdge
+            key={edge.id}
+            edge={edge}
+            index={idx}
+            from={from}
+            to={to}
+          />
         )
       })}
     </g>

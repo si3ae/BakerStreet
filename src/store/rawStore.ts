@@ -8,7 +8,7 @@ interface RawState {
   getReferencingEdgeIndices: (recordId: string) => number[]
 }
 
-export const useRawStore = create<RawState>((set, get) => ({
+export const useRawStore = create<RawState>((_set, get) => ({
   records: bakerstreetData.raw_store,
 
   getRecord: (id) => get().records[id],

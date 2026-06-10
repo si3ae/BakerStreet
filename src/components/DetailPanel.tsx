@@ -11,8 +11,8 @@ export function DetailPanel() {
     selectedEntityId !== null || selectedEdgeIndex !== null
 
   return (
-    <aside className="w-[360px] shrink-0 border-l border-black/20 bg-paper/60 overflow-auto">
-      <div className="px-4 py-3 border-b border-black/15 flex items-center justify-between">
+    <div className="h-full flex flex-col bg-paper/60">
+      <div className="px-4 py-3 border-b border-black/15 flex items-center justify-between shrink-0">
         <span className="font-mono text-xs uppercase tracking-wider text-black/50">
           Detail
         </span>
@@ -25,7 +25,7 @@ export function DetailPanel() {
           </button>
         )}
       </div>
-      <div className="px-4 py-4">
+      <div className="px-4 py-4 flex-1 overflow-auto">
         {selectedEntityId !== null && (
           <EntityPopover entityId={selectedEntityId} />
         )}
@@ -38,6 +38,6 @@ export function DetailPanel() {
           </div>
         )}
       </div>
-    </aside>
+    </div>
   )
 }
