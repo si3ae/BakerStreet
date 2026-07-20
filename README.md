@@ -1,3 +1,5 @@
+<!-- language switcher --> **English** | [한국어](README.ko.md)
+
 # BakerStreet — Verifiable AI for Shell-Company Investigation
 
 > A multi-signal fraud-investigation system with a reasoning interface that
@@ -194,6 +196,43 @@ transaction-to-step mapping by one. A human reviewer would likely have missed it
 the verification code caught it and showed it. That visible demotion is the
 demo's signature moment and the whole thesis in one frame: **an LLM can
 hallucinate and the verdict still stays safe.**
+
+---
+
+## Evaluation
+
+The verification loop's fault-detection was measured directly, not just
+claimed. A mutation-testing harness injected synthetic faults into the raw
+evidence backing all 3 cases (51 edges) and checked whether the 4-step
+verification caught them.
+
+- **Method**: 6 fault types injected only into `verified` edges (31 targets),
+  seed-fixed for reproducibility — 18 mutated case variants, 167 injected
+  faults total.
+- **Detection rate**: 100% (167/167), across all 6 fault types
+  (`EDGE_REVERSED`, `GHOST_REF`, `KIND_SWAPPED`, `ENDPOINT_SWAPPED`,
+  `REFS_EMPTIED`, `REF_SUBSTITUTED`).
+- **False-demotion rate**: 0% (0/19) on unmodified edges.
+- **Negative control**: to confirm the 100% detection rate isn't a harness
+  artifact — i.e. a scoring bug that simply can't register a miss — a fault
+  was designed that the verifier structurally cannot catch: swapping a
+  citation for another real transaction routed the same direction. No such
+  twin transaction exists in the current dataset, so a synthetic one was
+  planted directly in the raw store; the verifier passed it as `verified`,
+  and the harness correctly logged that as a miss. This confirms the harness
+  can detect failure, not just report success.
+
+**Known limitations** (next on the backlog):
+
+- Citation checking confirms structural support, not semantic equivalence —
+  swapping in another same-direction transaction would pass (proven by the
+  synthetic control above). Not currently possible in this dataset, but
+  becomes a real gap as the raw store grows.
+- Amounts aren't cross-checked — evidence doesn't assert amounts, so amount
+  tampering is out of scope.
+- The 0% false-demotion rate is a structural result of the verifier's
+  determinism (same input → same output on unchanged edges), not evidence of
+  robustness under novel inputs.
 
 ---
 
