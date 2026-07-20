@@ -1,7 +1,7 @@
 <!-- language switcher -->
 **English** | [한국어](README.ko.md)
 
-# BakerStreet — Verifiable AI for Shell-Company Investigation
+# BakerStreet: Verifiable AI for Shell-Company Investigation
 
 > A multi-signal fraud-investigation system with a reasoning interface that
 > turns LLM output into something you can check. Every claim the model makes is
@@ -22,11 +22,11 @@
 
 ## Demo
 
-![BakerStreet board — fund-flow and shared-attribute edges igniting, ending on a verification panel that demotes an inconsistent edge](bakerstreet-demo.gif)
+![BakerStreet board: fund-flow and shared-attribute edges igniting, ending on a verification panel that demotes an inconsistent edge](bakerstreet-demo.gif)
 
 > Fund-flow cycles and shared-attribute clusters ignite across the board, then
 > the right-hand panel flags one edge as `FLOW_DIRECTION_MISMATCH` and **demotes
-> it** — Gemma named the right entities but pointed at a transaction running the
+> it**: Gemma named the right entities but pointed at a transaction running the
 > opposite direction, and the verification code caught it.
 
 ---
@@ -40,7 +40,7 @@
   (DFS for fund cycles, degree-counting for hubs) does detection; Gemma only
   *structures* the result into evidence plus a Sherlock-toned narrative.
 - **Every claim is checked.** Each evidence item carries a reference into an
-  independent raw-record store; a 4-step verification confirms it — and demotes
+  independent raw-record store; a 4-step verification confirms it, and demotes
   it on screen if it fails. In the demo, **6 of 16 relationships are demoted**.
 - **The human keeps the verdict.** The system *suggests* a call; the person
   renders it and can OVERRULE.
@@ -51,7 +51,7 @@
 
 ## The Problem
 
-Paper companies — entities that exist on paper with no office and no staff — are
+Paper companies (entities that exist on paper with no office and no staff) are
 a standard money-laundering vehicle. A single shell is hard to flag. The pattern
 only appears when several move together: money flowing **A → B → C → A** in a
 cycle too clean to be coincidence.
@@ -60,16 +60,16 @@ Detecting that pattern is largely a solved problem. **Explaining it is not.**
 Rule-based systems bury analysts in false positives; ML classifiers raise
 accuracy but can't show *why* they flagged something. And "the AI flagged it" is
 not something you can take to court or an audit committee. The missing piece is
-not detection — it's a result a human can independently verify and stand behind.
+not detection: it's a result a human can independently verify and stand behind.
 
 ---
 
-## The Moat — built for the operator, not the institution
+## The Moat: built for the operator, not the institution
 
 Enterprise investigation platforms (Palantir-class) can already do this, but they
 assume expert operators and institutional licensing budgets. The people who most
-need to read these structures — compliance analysts, investigative journalists,
-junior financial-intelligence investigators — are exactly the ones priced and
+need to read these structures (compliance analysts, investigative journalists,
+junior financial-intelligence investigators) are exactly the ones priced and
 trained out.
 
 BakerStreet's bet is accessibility:
@@ -77,7 +77,7 @@ BakerStreet's bet is accessibility:
 - **No query language to learn.** You hand it the company / transaction data; it
   returns a visual, inspectable analysis. There is no tool to master first.
 - **Verifiable by default.** Every line and tag on the board maps to a raw record
-  you can click and read — not a black-box score.
+  you can click and read, not a black-box score.
 - **The human keeps the verdict.** The system surfaces evidence and suggests a
   call; the person decides, and can overrule it. That is precisely what makes the
   output defensible where an opaque risk number is not.
@@ -88,17 +88,17 @@ BakerStreet's bet is accessibility:
 
 Cross-border shell fraud evades single-signal detection because the pattern is
 distributed across layers, each legitimate in isolation but suspicious in
-aggregate. BakerStreet is designed as a modular multi-signal pipeline — each
+aggregate. BakerStreet is designed as a modular multi-signal pipeline: each
 detector independently testable and replaceable, with fusion kept as a separate
 layer rather than entangled with detection.
 
-- **Document analysis** `[designed]` — extracts textual and structural signals
+- **Document analysis** `[designed]`: extracts textual and structural signals
   from financial documents; flags anomalies in tone, formatting, and metadata
   that may indicate fabricated or manipulated records.
-- **Entity verification** `[designed]` — validates consistency across structured
+- **Entity verification** `[designed]`: validates consistency across structured
   sources; entity resolution across jurisdiction-inconsistent records; red flags
   in identity attributes and cross-reference mismatches.
-- **Relationship modeling** `[shipped]` — represents connections between
+- **Relationship modeling** `[shipped]`: represents connections between
   entities, accounts, and IPs as a graph; surfaces indirect links (circular fund
   flows, shared registered agents, common nominee directors, matching IPs) that
   appear only when modeled as a graph.
@@ -113,12 +113,12 @@ Input signals
    Fusion layer (modular, not a single risk score)
             │
             ▼
-   BakerStreet — verifiable reasoning interface
+   BakerStreet: verifiable reasoning interface
    (graph + raw-record-backed evidence + human verdict)
 ```
 
 The bet is that **integration**, not any single detector, is where existing tools
-fall short — and that externalizing the *reasoning*, not just the result, is what
+fall short, and that externalizing the *reasoning*, not just the result, is what
 makes the integrated output usable. The relationship layer below is the part the
 current demo implements end to end.
 
@@ -127,7 +127,7 @@ current demo implements end to end.
 ## How the Shipped Pipeline Works
 
 ```
-[Nemotron — synthesizes the surface layer only: names, addresses, memos]
+[Nemotron (synthesizes the surface layer only): names, addresses, memos]
         ▼
 [Raw Data Layer]  ── independent source of truth (read-only)
         ▼
@@ -135,7 +135,7 @@ current demo implements end to end.
         ▼
 [Pre-filter]  ── pulls only suspect entities + their relevant records
         ▼
-[Gemma — structuring + narrative]  ── NO detection; structures suspicion only
+[Gemma (structuring + narrative)]  ── NO detection; structures suspicion only
         ▼
 [Inference Graph Layer]  ◄── 4-step verification demotes inconsistent evidence
         ▼
@@ -143,8 +143,8 @@ current demo implements end to end.
 ```
 
 Detection and structuring are kept separate on purpose. The Pattern Detector
-finds suspicion deterministically — fund cycles via **DFS**, hubs by **counting
-each node's connections** — so results are reproducible and don't depend on the
+finds suspicion deterministically (fund cycles via **DFS**, hubs by **counting
+each node's connections**), so results are reproducible and don't depend on the
 model. Gemma then takes that output plus the relevant raw records and produces
 edges (`from`, `to`, `type`, `evidences`), each evidence tagged with a `kind`
 and `refs` to specific record IDs, plus a short narrative in a Sherlock register.
@@ -157,21 +157,21 @@ and `refs` to specific record IDs, plus a short narrative in a Sherlock register
 The brief was to use Nemotron and/or Gemma; this project uses both, because the
 two jobs have opposite cost profiles.
 
-- **Nemotron 3 Super (120B params)** — large, slow, expensive, so it's reserved
+- **Nemotron 3 Super (120B params)**: large, slow, expensive, so it's reserved
   for a heavy *run-once* task: generating the demo data. Real leak datasets
   (e.g. Panama Papers) carry real names and can't be shown, so Nemotron
-  synthesizes lookalike shell-company *surface* data — names, addresses,
-  registered agents, IPs — as JSON. Change the `case_id` and you get a different
+  synthesizes lookalike shell-company *surface* data (names, addresses,
+  registered agents, IPs) as JSON. Change the `case_id` and you get a different
   case: the same entity slot is "Polaris Management" in `alpha`, "Solaris
   Ventures" in `bravo`, "Zenith Management" in `charlie`. Consistency across a
   whole record is exactly where small models break (they'll rename the same
   company a line later); 120B held it together.
-- **Gemma 3n e4b (4B params)** — small, fast, free to call on NVIDIA NIM. It runs
+- **Gemma 3n e4b (4B params)**: small, fast, free to call on NVIDIA NIM. It runs
   every time a user opens a case, so it has to be light. (An earlier attempt with
   Gemma 4 31B timed out past 5 minutes on the NVIDIA cloud; 3n e4b answers in
   ~90s, so it won the stability call.)
 
-Heavy work on the big model, per-request work on the small one — both on the
+Heavy work on the big model, per-request work on the small one, both on the
 NVIDIA stack, so they compose cleanly. Crucially, **only the surface is
 synthetic**: the fund-flow patterns themselves come straight from IBM's public
 AML dataset, with Nemotron only repainting names and addresses on top.
@@ -181,17 +181,17 @@ AML dataset, with Nemotron only repainting names and addresses on top.
 ## The Verification Loop
 
 This is the part that separates BakerStreet from generic "explainable AI."
-Gemma's output is never trusted as-is — it is re-checked in code, in four steps:
+Gemma's output is never trusted as-is: it is re-checked in code, in four steps:
 
 1. Is the output valid against the expected JSON structure?
 2. Does each evidence `ref` point to a record that actually exists?
 3. Does the relationship type match the evidence kind?
-4. **Does that record actually link the two companies?** — the strongest check.
+4. **Does that record actually link the two companies?** The strongest check.
    If Gemma says `tx_cycle_03` supports an A→B edge but `tx_cycle_03` is really a
    B→C flow, verification fails.
 
 Failed evidence is greyed out and demoted on screen with its reason code. In the
-recorded demo, **6 of 16 relationships are demoted** — most as
+recorded demo, **6 of 16 relationships are demoted**, most as
 `FLOW_DIRECTION_MISMATCH`: Gemma got the cycle's entities right but shifted the
 transaction-to-step mapping by one. A human reviewer would likely have missed it;
 the verification code caught it and showed it. That visible demotion is the
@@ -208,14 +208,14 @@ evidence backing all 3 cases (51 edges) and checked whether the 4-step
 verification caught them.
 
 - **Method**: 6 fault types injected only into `verified` edges (31 targets),
-  seed-fixed for reproducibility — 18 mutated case variants, 167 injected
+  seed-fixed for reproducibility: 18 mutated case variants, 167 injected
   faults total.
 - **Detection rate**: 100% (167/167), across all 6 fault types
   (`EDGE_REVERSED`, `GHOST_REF`, `KIND_SWAPPED`, `ENDPOINT_SWAPPED`,
   `REFS_EMPTIED`, `REF_SUBSTITUTED`).
 - **False-demotion rate**: 0% (0/19) on unmodified edges.
 - **Negative control**: to confirm the 100% detection rate isn't a harness
-  artifact — i.e. a scoring bug that simply can't register a miss — a fault
+  artifact (i.e. a scoring bug that simply can't register a miss), a fault
   was designed that the verifier structurally cannot catch: swapping a
   citation for another real transaction routed the same direction. No such
   twin transaction exists in the current dataset, so a synthetic one was
@@ -225,11 +225,11 @@ verification caught them.
 
 **Known limitations** (next on the backlog):
 
-- Citation checking confirms structural support, not semantic equivalence —
+- Citation checking confirms structural support, not semantic equivalence:
   swapping in another same-direction transaction would pass (proven by the
   synthetic control above). Not currently possible in this dataset, but
   becomes a real gap as the raw store grows.
-- Amounts aren't cross-checked — evidence doesn't assert amounts, so amount
+- Amounts aren't cross-checked: evidence doesn't assert amounts, so amount
   tampering is out of scope.
 - The 0% false-demotion rate is a structural result of the verifier's
   determinism (same input → same output on unchanged edges), not evidence of
@@ -240,7 +240,7 @@ verification caught them.
 ## Shipped vs. Designed
 
 The demo is real and runs end-to-end on a frozen dataset. The broader multi-signal
-system and the live backend are designed but not yet built — stated plainly.
+system and the live backend are designed but not yet built. Stated plainly.
 
 ### Shipped (working demo)
 
@@ -249,7 +249,7 @@ system and the live backend are designed but not yet built — stated plainly.
 | Investigation board UI | 15 shell-company cards, jurisdictions, ASCII detective, investigator log |
 | Relationship graph + two-layer edges | `flow` (red, directed, arrowed) vs `shared_attribute` (dashed, ink-blue) |
 | Deterministic detection | cycle (DFS), hub (degree count), dispersion |
-| Nemotron surface synthesis | 3 switchable cases — `alpha` / `bravo` / `charlie` |
+| Nemotron surface synthesis | 3 switchable cases: `alpha` / `bravo` / `charlie` |
 | Gemma structuring | evidence + `refs` + Sherlock-toned narrative |
 | 4-step verification + demotion | inconsistent evidence greyed out with reason code |
 | Verdict + sealing | AI *suggests*; human decides (CONFIRMED / SUSPECTED / HOLD / CLEAN), `OVERRULED` stamp on disagreement, then paper-fold → envelope → stamp → archive |
@@ -260,7 +260,7 @@ system and the live backend are designed but not yet built — stated plainly.
 |---|---|
 | Document-anomaly signal layer | textual / structural / metadata anomaly extraction feeding the same graph |
 | Entity-resolution signal layer | cross-jurisdiction identity reconciliation + red-flag attributes |
-| Fusion layer | modular signal combination (equal / learned / rule-prioritized — open question) |
+| Fusion layer | modular signal combination (equal / learned / rule-prioritized; open question) |
 | Real-time investigation | FastAPI backend; the Colab pipeline ported into `stages/` |
 | Streaming UX | SSE `progress` / `edge` / `verdict` events into the graph sequencer |
 | New-case synthesis | pre-built case pool (safe) over live Nemotron calls (impressive but timeout-prone) |
@@ -270,7 +270,7 @@ system and the live backend are designed but not yet built — stated plainly.
 
 ## Demo Results (frozen dataset)
 
-Demotions are the point, not a defect — they are the verification loop doing its job.
+Demotions are the point, not a defect: they are the verification loop doing its job.
 
 | Case | Relationships | Verified | Demoted | Main demotion cause |
 |---|---|---|---|---|
@@ -282,7 +282,7 @@ Demotions are the point, not a defect — they are the verification loop doing i
 
 ## Honest Limitations
 
-Stated deliberately — over-claiming would undercut the whole "verifiable" premise.
+Stated deliberately: over-claiming would undercut the whole "verifiable" premise.
 
 - **The in-browser cycle check is a JSON-integrity check, not independent
   verification.** It consumes the same edges Gemma produced; two checks over one
@@ -301,7 +301,7 @@ Stated deliberately — over-claiming would undercut the whole "verifiable" prem
 
 Still being worked out:
 
-- Fusion-layer weighting strategy — equal, learned, or rule-prioritized
+- Fusion-layer weighting strategy: equal, learned, or rule-prioritized
 - Confidence calibration when only one or two signals fire
 - Graph traversal depth limits (false-positive trade-off)
 - Layout / animation timing for cases with 10+ entities
@@ -316,7 +316,7 @@ Still being worked out:
 | Synthetic data seeds | IBM AML-Data (Kaggle), ICIJ Offshore Leaks |
 | Surface synthesis | Nemotron 3 Super 120B (via NVIDIA NIM) |
 | Structuring LLM | Gemma 3n e4b 4B (via NVIDIA NIM) |
-| Detection | Deterministic Python — DFS (cycle), degree (hub), dispersion |
+| Detection | Deterministic Python: DFS (cycle), degree (hub), dispersion |
 | Core pipeline | Python |
 | Interface | React + TypeScript + Zustand + SVG + Framer Motion + Canvas 2D |
 
@@ -326,11 +326,11 @@ Still being worked out:
 
 The same interpretability-first pattern, applied across financial domains:
 
-> **[Dandi](https://github.com/si3ae/Dandi-AI_Accounting_Automation_System)** —
+> **[Dandi](https://github.com/si3ae/Dandi-AI_Accounting_Automation_System)**:
 > civic-level financial AI for cash-heavy SMBs; shipped working prototype; same
 > anomaly-detection pattern (baseline → deviation → alert → rationale)
 >
-> **[Financial Intelligence Terminal](https://github.com/si3ae/Financial_Intelligence_Terminal)** —
+> **[Financial Intelligence Terminal](https://github.com/si3ae/Financial_Intelligence_Terminal)**:
 > multi-source signal aggregation for cross-border market monitoring; shares the
 > data-normalization approach used here
 
