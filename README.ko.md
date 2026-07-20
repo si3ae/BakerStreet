@@ -1,4 +1,5 @@
-<!-- language switcher --> [English](README.md) | **한국어**
+<!-- language switcher -->
+[English](README.md) | **한국어**
 
 # BakerStreet — 셸 컴퍼니 수사를 위한 검증 가능한 AI
 
