@@ -326,11 +326,11 @@ Still being worked out:
 
 The same interpretability-first pattern, applied across financial domains:
 
-> **[Dandi](https://github.com/si3ae/Dandi-AI_Accounting_Automation_System)**:
+> **[Dandi](https://github.com/si3ae/Dandi)**:
 > civic-level financial AI for cash-heavy SMBs; shipped working prototype; same
 > anomaly-detection pattern (baseline → deviation → alert → rationale)
 >
-> **[Financial Intelligence Terminal](https://github.com/si3ae/Financial_Intelligence_Terminal)**:
+> **[Lookout](https://github.com/si3ae/Lookout)**:
 > multi-source signal aggregation for cross-border market monitoring; shares the
 > data-normalization approach used here
 
